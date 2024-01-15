@@ -23,7 +23,9 @@ let vueApp = new Vue({
         joystick: {
             vertical: 0,
             horizontal: 0,
-        }
+        },
+        // publisher
+        pubInterval: null,
     },
     methods: {
         connect: function() {
@@ -36,6 +38,7 @@ let vueApp = new Vue({
             this.ros.on('connection', () => {
                 this.connected = true
                 console.log('Connection to ROSBridge established!')
+                this.pubInterval = setInterval(this.publish, 100)
             })
             this.ros.on('error', (error) => {
                 console.log('Something went wrong when trying to connect')
@@ -44,7 +47,20 @@ let vueApp = new Vue({
             this.ros.on('close', () => {
                 this.connected = false
                 console.log('Connection to ROSBridge was closed!')
+                clearInterval(this.pubInterval)
             })
+        },
+        publish: function() {
+            let topic = new ROSLIB.Topic({
+                ros: this.ros,
+                name: '/cmd_vel',
+                messageType: 'geometry_msgs/Twist'
+            })
+            let message = new ROSLIB.Message({
+                linear: { x: this.joystick.vertical, y: 0, z: 0, },
+                angular: { x: 0, y: 0, z: this.joystick.horizontal, },
+            })
+            topic.publish(message)
         },
         disconnect: function() {
             this.ros.close()
