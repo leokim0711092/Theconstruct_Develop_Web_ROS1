@@ -32,8 +32,6 @@ let vueApp = new Vue({
         },
         disconnect: function() {
             this.ros.close()
-            console.log('hello')
-
         },
         sendCommand: function() {
             let topic = new ROSLIB.Topic({
@@ -44,6 +42,30 @@ let vueApp = new Vue({
             let message = new ROSLIB.Message({
                 linear: { x: 1, y: 0, z: 0, },
                 angular: { x: 0, y: 0, z: 0.5, },
+            })
+            topic.publish(message)
+        },
+        turnRight: function() {
+            let topic = new ROSLIB.Topic({
+                ros: this.ros,
+                name: '/cmd_vel',
+                messageType: 'geometry_msgs/Twist'
+            })
+            let message = new ROSLIB.Message({
+                linear: { x: 1, y: 0, z: 0, },
+                angular: { x: 0, y: 0, z: -0.5, },
+            })
+            topic.publish(message)
+        },
+        stop: function() {
+            let topic = new ROSLIB.Topic({
+                ros: this.ros,
+                name: '/cmd_vel',
+                messageType: 'geometry_msgs/Twist'
+            })
+            let message = new ROSLIB.Message({
+                linear: { x: 0, y: 0, z: 0, },
+                angular: { x: 0, y: 0, z: 0, },
             })
             topic.publish(message)
         },
