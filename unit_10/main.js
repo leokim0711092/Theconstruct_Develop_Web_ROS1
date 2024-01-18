@@ -11,7 +11,7 @@ var app = new Vue({
         goal: null,
         action: {
             goal: { position: {x: 0, y: 0, z: 0} },
-            feedback: { position: {x: 0, y: 0, z: 0}, state: 'idle' },
+            feedback: { position: 0, state: 'idle' },
             result: { success: false },
             status: { status: 0, text: '' },
         }
